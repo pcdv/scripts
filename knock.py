@@ -17,6 +17,7 @@ Sample config file
     password = secret      => the secret password (ideally, should be impossible to guess)
     command = echo "Successful connection from %IP"     
                            => the command to launch on server when the client submits the correct password
+    message = Welcome!     => message seen in the browser after successful login
 '''
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 import urlparse, cgi, os, sys, binascii, hashlib, ConfigParser
