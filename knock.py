@@ -79,4 +79,3 @@ if __name__ == '__main__':
     cfg.read((sys.argv + ['knock.cfg'])[1:2])
     CONFIG.update(dict(cfg.items('config')))
     HTTPServer(('0.0.0.0', int(CONFIG.get('port', 8080))), GetHandler).serve_forever()
-                                                                                          1,1          Haut
