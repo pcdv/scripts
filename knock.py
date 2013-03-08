@@ -5,7 +5,8 @@ web app, only a MD5 hash salted with a long random string.
 It has no dependencies other than the batteries included in Python 2.5. The HTML part of the app
 loads JQuery and crypto-js/md5 from a CDN.
 
-The script can be used to execute firewall rules in order to open up some ports for the calling IP.
+The script can be used to execute to open up some ports for the calling IP, or any other operation
+as specified in configuration. 
 
 It is called knock.py because it is similar to port knocking except that a password is used.
 
