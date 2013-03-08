@@ -30,7 +30,6 @@ INDEX = '''<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rol
 $(function() {
   function submit() { $("#pw").val(CryptoJS.MD5($("#pass").val() + "CHALLENGE")); }
   $("form").submit(submit);
-  $("#pass").change(submit);
 });
 </script>
 <input type="password" id="pass">
