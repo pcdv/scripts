@@ -7,11 +7,16 @@ loads JQuery and crypto-js/md5 from a CDN.
 
 The script can be used to execute firewall rules in order to open up some ports for the calling IP.
 
-Sample config
+It is called knock.py because it is similar to port knocking except that a password is used.
+
+Sample config file
+==================
     [config]
-    password = secret
-    path = foo
-    command = echo OK
+    port = 8080            => port on which the server should listen
+    path = foo             => the URL on which the web app is served (ideally, should be hard to guess)
+    password = secret      => the secret password (ideally, should be impossible to guess)
+    command = echo "Successful connection from %IP"     
+                           => the command to launch on server when the client submits the correct password
 '''
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 import urlparse, cgi, os, sys, binascii, hashlib, ConfigParser
@@ -55,7 +60,7 @@ class GetHandler(BaseHTTPRequestHandler):
                                 environ={'REQUEST_METHOD':'POST', 'CONTENT_TYPE':self.headers['Content-Type'], }) 
         if form['pw'].value == md5(CONFIG['password'] + CACHE.pop(self.client_address[0])):
             self.reply(CONFIG.get('welcome', 'Welcome!'))
-            os.system(CONFIG['command'])
+            os.system(CONFIG['command'].replace('%IP', self.client_address[0]))
         
     def check_path(self):
         '''Checks that the URL is valid (otherwise no response will be sent).'''
@@ -73,5 +78,5 @@ if __name__ == '__main__':
     cfg = ConfigParser.ConfigParser()
     cfg.read((sys.argv + ['knock.cfg'])[1:2])
     CONFIG.update(dict(cfg.items('config')))
-    HTTPServer(('0.0.0.0', CONFIG.get('port', 8080)), GetHandler).serve_forever()
+    HTTPServer(('0.0.0.0', int(CONFIG.get('port', 8080))), GetHandler).serve_forever()
                                                                                           1,1          Haut
