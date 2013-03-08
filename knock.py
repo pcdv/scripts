@@ -1,8 +1,8 @@
-'''A script that serves an HTTP page on a configurable URL and executes a predefined command
+'''A script that serves a micro web app on a configurable URL and executes a predefined command
 if the user submits the correct password. The password is never sent on the network by the
 web app, only a MD5 hash salted with a long random string.
 
-It has no dependencies other than the batteries included in Python. The HTML part of the app
+It has no dependencies other than the batteries included in Python 2.5. The HTML part of the app
 loads JQuery and crypto-js/md5 from a CDN.
 
 The script can be used to execute firewall rules in order to open up some ports for the calling IP.
@@ -36,9 +36,7 @@ $(function() {
 <form method="post"><input type="hidden" name="pw" id="pw"/><input type="submit"/></form>
 '''
 def md5(s):
-    h = hashlib.md5()
-    h.update(s)
-    return h.hexdigest()
+    return hashlib.md5(s).hexdigest()
 
 class GetHandler(BaseHTTPRequestHandler):
     def reply(self, response, headers=None):
