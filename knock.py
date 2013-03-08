@@ -2,6 +2,11 @@
 if the user submits the correct password. The password is never sent on the network by the
 web app, only a MD5 hash salted with a long random string.
 
+It has no dependencies other than the batteries included in Python. The HTML part of the app
+loads JQuery and crypto-js/md5 from a CDN.
+
+The script can be used to execute firewall rules in order to open up some ports for the calling IP.
+
 Sample config
     [config]
     password = secret
@@ -32,6 +37,7 @@ def md5(s):
 
 class GetHandler(BaseHTTPRequestHandler):
     def reply(self, response, headers=None):
+        '''Helper method for sending a string response back, with optional headers.'''
         self.send_response(200)
         for k, v in (headers or {}).items():
             self.send_header(k, v)
@@ -39,10 +45,12 @@ class GetHandler(BaseHTTPRequestHandler):
         self.wfile.write(response)
 
     def index(self):
+        '''Bootstraps the "web app" when the secret URL is called.'''
         chal = CACHE[self.client_address[0]] = binascii.b2a_hex(os.urandom(25))
         self.reply(INDEX.replace('CHALLENGE', chal), {'Content-Type': 'text/html'})
 
     def knock(self):
+        '''Verifies the challenge submitted by the user.'''
         form = cgi.FieldStorage(fp=self.rfile, headers=self.headers, 
                                 environ={'REQUEST_METHOD':'POST', 'CONTENT_TYPE':self.headers['Content-Type'], }) 
         if form['pw'].value == md5(CONFIG['password'] + CACHE.pop(self.client_address[0])):
@@ -50,6 +58,7 @@ class GetHandler(BaseHTTPRequestHandler):
             os.system(CONFIG['command'])
         
     def check_path(self):
+        '''Checks that the URL is valid (otherwise no response will be sent).'''
         return self.path.strip('/') == CONFIG.get('path', '')
 
     def do_POST(self):
@@ -66,4 +75,3 @@ if __name__ == '__main__':
     CONFIG.update(dict(cfg.items('config')))
     HTTPServer(('0.0.0.0', CONFIG.get('port', 8080)), GetHandler).serve_forever()
                                                                                           1,1          Haut
-
