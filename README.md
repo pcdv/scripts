@@ -8,4 +8,6 @@ Miscellaneous scripts:
  - gradlerun.py : allows to run a java process through Gradle, allowing to
    easily compute the classpath according to transitive dependencies of the
    main module.
+   Example:
+   python gradlerun.py x org.eclipse.jetty:jetty-server:9.+ org.eclipse.jetty.server.Server - - --info
 
